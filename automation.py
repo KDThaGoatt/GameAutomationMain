@@ -36,10 +36,11 @@ def upgrades():
                 df = 0
 
 def mainscreen():
-    while mainscrPoints == True:
+    try:
+        p.locateOnScreen("0points.png")
+        mainscrPoints = True
+    except:
+        mainscrPoints = False
 
-
-    
-
-
-    
+    if mainscrPoints == True:
+        
