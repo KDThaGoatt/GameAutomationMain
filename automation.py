@@ -2,18 +2,17 @@ import pyautogui as p
 import time
 import keyboard
 
-mainscrPoints = True
 hp = 0
 atk = 0
 df = 0
 
 def upgrades():
     global hp, atk, df
-    points = True
+    points = False
     while points:
         try:
             p.locateOnScreen("upgradeend.png")
-            p.click(x=350, y=750) #search to see if upgrade points are zero and click play if they are
+            p.click('playbutton.png') #search to see if upgrade points are zero and click play if they are
             points = False
             mainscreen()
         except:
@@ -23,44 +22,59 @@ def upgrades():
         if hp + atk + df == 0 or hp + atk + df == 3:
             p.click(x=205, y=585) #upgrading HP
             hp = 1 - hp
+            print("hp upgraded")
         elif (hp == 1 and atk == 0) or (hp == 0 and atk == 1):
             p.click(x=350, y=585) #upgrading attack
             atk = 1 - atk
+            print("atk upgraded")
         else:
             p.click(x=490, y=585) #upgrading defense
             df = 1 - df
+            print("df upgraded")
 
 def mainscreen():
-    global mainscrPoints
-    mainscrActive = True
+    mainscrPoints = False
+    mainscrActive = False
+
     while True:
         time.sleep(0.2)
-        print("test")
         try:
             location = p.locateOnScreen('playingpixel.png')
-            print("test2")
-            print(location)
+            print(f"game playing, pixels located at {location}")
             mainscrActive = False
             # Checks to see if color of background when playing is on the screen
         except:
             mainscrActive = True
-            print('locoation not found')
+            print('location not found')
             #If play background cant be located then it is on the main screen
-        while mainscrActive:
+        while mainscrActive == True:
+            time.sleep(0.1)
             try:
-                p.locateOnScreen('0points.png') #Check if the points are zero
+                print('looking for 0 points')
+                p.locateOnScreen('0points.png',confidence=0.9) #Check if the points are zero
                 mainscrPoints = False
                 print('points 0')
-            except:
+            except Exception as e:
                 mainscrPoints = True
+                print(str(e))
                 
-
-        if mainscrPoints:
-            p.click(x=345, y=600) #Click upgrade button
-            upgrades()
-        else:
-            p.click(x=345, y=475) #Click try again button
-            break
+            if mainscrPoints == True:
+                time.sleep(0.5)
+                try:
+                    upgradelocation = p.locateOnScreen('upgradebutton.png', confidence=0.9)
+                    upgradecenter = p.center(upgradelocation)
+                    p.click(upgradecenter)
+                    print("upgrade clicked")
+                    upgrades()
+                except:
+                    print("couldnt find upgrade button")
+            else:
+                time.sleep(0.5)
+                tryagainlocation = p.locateOnScreen('tryagainbutton.png', confidence=0.9)
+                tryagaincenter = p.center(tryagainlocation)
+                p.click(tryagaincenter)
+                print("try again clicked")
+                break
         
 def main():
     while True:
