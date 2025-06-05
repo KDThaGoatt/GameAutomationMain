@@ -1,6 +1,6 @@
 import pyautogui as p
 import time
 
-time.sleep(5)
-location = p.locateOnScreen('playingpixel.png')
+time.sleep(2)
+location = p.locateOnScreen('healthbar.png')
 print(location)

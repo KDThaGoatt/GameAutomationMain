@@ -1,6 +1,5 @@
 import pyautogui as p
 import time
-import keyboard
 
 hp = 0
 atk = 0
@@ -8,15 +7,22 @@ df = 0
 
 def upgrades():
     global hp, atk, df
-    points = False
-    while points:
+    points = True
+    print('running upgrades')
+    while points == True:
         try:
             p.locateOnScreen("upgradeend.png")
-            p.click('playbutton.png') #search to see if upgrade points are zero and click play if they are
+            print("looking if points zero")
             points = False
+            print("points are zero")
+            playbutton = p.locateOnScreen('playbutton.png', confidence=0.95) #search to see if upgrade points are zero and click play if they are
+            playbuttonpoint = p.center(playbutton)
+            p.click(playbuttonpoint)
+            print("clicking play")
             mainscreen()
-        except:
+        except Exception as e:
             points = True
+            print(e)
 
 
         if hp + atk + df == 0 or hp + atk + df == 3:
@@ -39,8 +45,8 @@ def mainscreen():
     while True:
         time.sleep(0.2)
         try:
-            location = p.locateOnScreen('playingpixel.png')
-            print(f"game playing, pixels located at {location}")
+            location = p.locateOnScreen('healthbar.png')
+            print(f"game playing, healthbar located at {location}")
             mainscrActive = False
             # Checks to see if color of background when playing is on the screen
         except:
@@ -51,7 +57,7 @@ def mainscreen():
             time.sleep(0.1)
             try:
                 print('looking for 0 points')
-                p.locateOnScreen('0points.png',confidence=0.9) #Check if the points are zero
+                p.locateOnScreen('0points.png') #Check if the points are zero
                 mainscrPoints = False
                 print('points 0')
             except Exception as e:
@@ -66,6 +72,7 @@ def mainscreen():
                     p.click(upgradecenter)
                     print("upgrade clicked")
                     upgrades()
+                    break
                 except:
                     print("couldnt find upgrade button")
             else:
